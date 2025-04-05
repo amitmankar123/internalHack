@@ -30,6 +30,21 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    // If we're in demo mode and this is a real API call (not mocked),
+    // we might get connection errors - let's handle them gracefully
+    if (env.DEMO_MODE && !error.response) {
+      console.warn("API request failed in demo mode:", error.message);
+      // Return a mock response structure to prevent app crashes
+      return Promise.reject({
+        response: {
+          status: 503,
+          data: {
+            message: "Service unavailable in demo mode"
+          }
+        }
+      });
+    }
+    
     const { response } = error;
     
     // Handle token expiration

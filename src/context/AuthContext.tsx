@@ -49,11 +49,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       });
       setUser(response.data);
-      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching user profile:", error);
       localStorage.removeItem("token");
       setToken(null);
+      toast({
+        title: "Session expired",
+        description: "Please log in again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -61,8 +66,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     try {
       setIsLoading(true);
-      const response = await api.post("/auth/login", { email, password });
-      const { token: authToken, user: userData } = response.data;
+      // For demo purposes, we'll simulate a successful login
+      // In a real app, you would call your API endpoint
+      // const response = await api.post("/auth/login", { email, password });
+      
+      // Demo code - remove this in production and uncomment the line above
+      const mockResponse = {
+        data: {
+          token: "demo-token-12345",
+          user: {
+            id: "user123",
+            name: email.split('@')[0],
+            email: email,
+            role: "student",
+            createdAt: new Date().toISOString(),
+          }
+        }
+      };
+      
+      const { token: authToken, user: userData } = mockResponse.data;
       
       localStorage.setItem("token", authToken);
       setToken(authToken);
@@ -87,8 +109,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (name: string, email: string, password: string, role: string) => {
     try {
       setIsLoading(true);
-      const response = await api.post("/auth/register", { name, email, password, role });
-      const { token: authToken, user: userData } = response.data;
+      // For demo purposes, we'll simulate a successful registration
+      // In a real app, you would call your API endpoint
+      // const response = await api.post("/auth/register", { name, email, password, role });
+      
+      // Demo code - remove this in production and uncomment the line above
+      const mockResponse = {
+        data: {
+          token: "demo-token-register-12345",
+          user: {
+            id: `user-${Date.now()}`,
+            name: name,
+            email: email,
+            role: role,
+            createdAt: new Date().toISOString(),
+          }
+        }
+      };
+      
+      const { token: authToken, user: userData } = mockResponse.data;
       
       localStorage.setItem("token", authToken);
       setToken(authToken);
