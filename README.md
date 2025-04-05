@@ -1,73 +1,146 @@
-# Welcome to your Lovable project
 
-## Project info
+# Mental Health Mirror
 
-**URL**: https://lovable.dev/projects/9ab3de49-831d-4889-90d4-d42a9a14f55d
+A comprehensive mental health platform that helps users track their emotional well-being through voice analysis, personalized recommendations, and community support.
 
-## How can I edit this code?
+## Project Structure
 
-There are several ways of editing your application.
+The project consists of two main components:
 
-**Use Lovable**
+1. **Frontend**: React.js application with Tailwind CSS
+2. **Backend**: Node.js Express API with MongoDB database and a Python-based AI service
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/9ab3de49-831d-4889-90d4-d42a9a14f55d) and start prompting.
+## Features
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Voice-based Mood Check-ins**: Speak about your mood and let AI analyze your emotions
+- **Text-based Mood Check-ins**: Alternative option for journaling your feelings
+- **Plant Growth Tracker**: Gamified streak system where your plant grows with consistent check-ins
+- **Personalized Recommendations**: Get tailored music, videos, activities, and journal prompts
+- **Weekly Summaries**: Downloadable PDF reports of your mood patterns and insights
+- **Journal System**: Keep track of your thoughts and feelings over time
+- **Community Support**: Connect with others who have similar emotional experiences
 
-**Use your preferred IDE**
+## Technical Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Frontend
+- React.js
+- Tailwind CSS
+- Axios for API requests
+- Recharts for data visualization
+- Audio recording and playback capabilities
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Backend
+- Node.js with Express
+- MongoDB database with Mongoose
+- JWT authentication
+- PDF generation with PDFKit
 
-Follow these steps:
+### AI Services
+- Python FastAPI
+- Transformers for NLP and sentiment analysis
+- Librosa for audio feature extraction
+- Whisper for speech-to-text conversion
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Setup Instructions
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Frontend Setup
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. Install dependencies:
+```bash
+cd frontend
+npm install
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+2. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Backend Setup
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Install dependencies:
+```bash
+cd backend
+npm install
+```
 
-**Use GitHub Codespaces**
+2. Create a `.env` file in the backend directory with the following variables:
+```
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/mental_health_mirror
+JWT_SECRET=your_jwt_secret_key_change_this_in_production
+AI_SERVICE_URL=http://localhost:8000
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+3. Start the backend server:
+```bash
+npm run dev
+```
 
-## What technologies are used for this project?
+### AI Service Setup
 
-This project is built with:
+1. Install Python dependencies:
+```bash
+cd ai-service
+pip install -r requirements.txt
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+2. Start the AI service:
+```bash
+uvicorn main:app --reload
+```
 
-## How can I deploy this project?
+## API Endpoints
 
-Simply open [Lovable](https://lovable.dev/projects/9ab3de49-831d-4889-90d4-d42a9a14f55d) and click on Share -> Publish.
+### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login and get JWT token
 
-## Can I connect a custom domain to my Lovable project?
+### User Profile
+- `GET /api/users/profile` - Get user profile
+- `PUT /api/users/profile` - Update user profile
 
-Yes it is!
+### Mood Check-ins
+- `POST /api/mood/analyze-voice` - Analyze voice recording
+- `POST /api/mood/analyze-text` - Analyze text sentiment
+- `POST /api/mood/check-in` - Save mood check-in
+- `GET /api/mood/history` - Get user's mood history
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Recommendations
+- `GET /api/recommendations` - Get user's recommendations
+- `POST /api/recommendations/feedback` - Submit feedback for a recommendation
+- `PUT /api/recommendations/:id/complete` - Mark recommendation as completed
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Weekly Summaries
+- `GET /api/summaries` - Get user's summaries
+- `POST /api/summaries/generate` - Generate a new summary
+- `GET /api/summaries/download/:filename` - Download a summary PDF
+
+### Journal
+- `GET /api/journal` - Get user's journal entries
+- `POST /api/journal` - Create a new journal entry
+- `GET /api/journal/:id` - Get a journal entry by ID
+- `PUT /api/journal/:id` - Update a journal entry
+- `DELETE /api/journal/:id` - Delete a journal entry
+
+### Dashboard
+- `GET /api/dashboard/stats` - Get dashboard statistics
+
+### Community
+- `GET /api/community` - Get all community groups
+- `POST /api/community` - Create a new community group
+- `POST /api/community/:id/join` - Join a community group
+- `POST /api/community/:id/leave` - Leave a community group
+- `POST /api/community/:id/message` - Post a message to a community group
+- `GET /api/community/:id/messages` - Get messages from a community group
+
+## AI Service Endpoints
+
+- `POST /analyze-voice` - Analyze voice recording to detect mood and emotions
+- `POST /analyze-text` - Analyze text to detect mood and emotions
+- `POST /generate-recommendations` - Generate personalized recommendations
+- `POST /generate-summary` - Generate weekly summary insights
+
+## License
+
+This project is licensed under the MIT License
