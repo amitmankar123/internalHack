@@ -1,215 +1,171 @@
 
-import { useState, ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { ChevronLeft, ChevronRight, BarChart2, CheckSquare, BookOpen, Calendar, Users, UserCircle, Award, Settings, LogOut, GameController } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Home, 
-  MessageSquare, 
-  History, 
-  BarChart, 
-  Users, 
-  User, 
-  Menu, 
-  X, 
-  LogOut 
-} from "lucide-react";
+import TokenBalance from "@/components/TokenBalance";
+import PlantGrowthTracker from "@/components/PlantGrowthTracker";
+import { useMobile } from "@/hooks/use-mobile";
 
 interface DashboardLayoutProps {
   children: ReactNode;
-  pageTitle: string;
+  pageTitle?: string;
 }
 
 const DashboardLayout = ({ children, pageTitle }: DashboardLayoutProps) => {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isMobile = useMobile();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(isMobile);
 
-  const navigation = [
-    { name: "Dashboard", href: "/", icon: Home },
-    { name: "Check-in", href: "/check-in", icon: MessageSquare },
-    { name: "Journal", href: "/journal", icon: MessageSquare },
-    { name: "History", href: "/history", icon: History },
-    { name: "Community", href: "/community", icon: Users },
-    { name: "Profile", href: "/profile", icon: User },
+  // Navigation items for the sidebar
+  const navItems = [
+    { name: "Dashboard", path: "/", icon: BarChart2 },
+    { name: "Check-In", path: "/check-in", icon: CheckSquare },
+    { name: "Journal", path: "/journal", icon: BookOpen },
+    { name: "History", path: "/history", icon: Calendar },
+    { name: "Community", path: "/community", icon: Users },
+    { name: "Games", path: "/games", icon: GameController },
+    { name: "Rewards", path: "/rewards", icon: Award },
+    { name: "Profile", path: "/profile", icon: UserCircle },
   ];
 
-  const initials = user?.name
-    ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-    : "U";
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar for desktop */}
-      <div className="hidden md:flex md:flex-shrink-0">
-        <div className="flex flex-col w-64">
-          <div className="flex flex-col flex-grow pt-5 overflow-y-auto border-r border-gray-200 bg-white">
-            <div className="flex items-center justify-center flex-shrink-0 px-4">
-              <Link to="/" className="flex items-center">
-                <div className="w-10 h-10 bg-wellness-green rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">MH</span>
-                </div>
-                <h1 className="ml-2 text-xl font-bold text-gray-800">MoodBloom</h1>
-              </Link>
-            </div>
-            <div className="mt-10 flex-grow">
-              <nav className="px-4 space-y-1">
-                {navigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={`group flex items-center px-2 py-3 text-sm font-medium rounded-md ${
-                        isActive
-                          ? "bg-wellness-green text-white"
-                          : "text-gray-700 hover:bg-wellness-green-light hover:text-white"
-                      }`}
-                    >
-                      <item.icon
-                        className={`mr-3 flex-shrink-0 h-5 w-5 ${
-                          isActive ? "text-white" : "text-gray-500 group-hover:text-white"
-                        }`}
-                      />
-                      {item.name}
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-            <div className="p-4 border-t border-gray-200">
-              <div className="flex items-center">
-                <Avatar>
-                  <AvatarImage src="" alt={user?.name || ""} />
-                  <AvatarFallback className="bg-wellness-purple-light text-wellness-purple-dark">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-700">{user?.name}</p>
-                  <Button 
-                    variant="ghost" 
-                    className="text-xs text-gray-500 flex items-center mt-1 p-0 h-auto"
-                    onClick={logout}
-                  >
-                    <LogOut className="h-3 w-3 mr-1" />
-                    Sign out
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      <div
-        className={`fixed inset-0 z-40 md:hidden ${
-          sidebarOpen ? "block" : "hidden"
-        }`}
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "h-screen fixed top-0 left-0 z-30 bg-white border-r border-gray-200 transition-all duration-300",
+          sidebarCollapsed ? "w-20" : "w-64"
+        )}
       >
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)}></div>
-        <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-white">
-          <div className="absolute top-0 right-0 -mr-12 pt-2">
+        <div className="flex flex-col h-full">
+          {/* Sidebar Header */}
+          <div className={cn(
+            "flex items-center px-4 h-16 border-b border-gray-200",
+            sidebarCollapsed ? "justify-center" : "justify-between"
+          )}>
+            {!sidebarCollapsed && (
+              <div className="flex items-center space-x-2">
+                <div className="h-8 w-8 bg-wellness-green rounded-full flex items-center justify-center">
+                  <span className="text-white font-semibold">WM</span>
+                </div>
+                <h1 className="font-semibold">Wellness Mirror</h1>
+              </div>
+            )}
             <Button
               variant="ghost"
+              size="icon"
               className="text-gray-500"
-              onClick={() => setSidebarOpen(false)}
+              onClick={toggleSidebar}
             >
-              <X className="h-6 w-6" />
+              {sidebarCollapsed ? <ChevronRight /> : <ChevronLeft />}
             </Button>
           </div>
-          <div className="flex items-center justify-center px-4">
-            <Link to="/" className="flex items-center">
-              <div className="w-8 h-8 bg-wellness-green rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">MH</span>
+
+          {/* User Info */}
+          <div className={cn(
+            "border-b border-gray-200 py-4",
+            sidebarCollapsed ? "px-2 text-center" : "px-4"
+          )}>
+            <div className={cn(
+              "flex items-center",
+              sidebarCollapsed ? "flex-col" : "space-x-3"
+            )}>
+              <div className="h-10 w-10 bg-wellness-green-light text-wellness-green rounded-full flex items-center justify-center font-medium">
+                {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
               </div>
-              <h1 className="ml-2 text-lg font-bold text-gray-800">MoodBloom</h1>
-            </Link>
+              {!sidebarCollapsed && (
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium truncate">{user?.name || "User"}</p>
+                  <p className="text-xs text-gray-500 truncate">{user?.role || "Student"}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Token balance and plant */}
+            <div className={cn(
+              "mt-4 grid",
+              sidebarCollapsed ? "grid-cols-1 gap-2" : "grid-cols-2 gap-3"
+            )}>
+              <TokenBalance collapsed={sidebarCollapsed} />
+              <PlantGrowthTracker collapsed={sidebarCollapsed} />
+            </div>
           </div>
-          <div className="mt-5 flex-1 h-0 overflow-y-auto">
-            <nav className="px-2 space-y-1">
-              {navigation.map((item) => {
-                const isActive = location.pathname === item.href;
-                return (
+
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto py-4">
+            <ul className="space-y-1 px-2">
+              {navItems.map((item) => (
+                <li key={item.path}>
                   <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                      isActive
+                    to={item.path}
+                    className={cn(
+                      "flex items-center rounded-md px-3 py-2 text-sm font-medium",
+                      sidebarCollapsed ? "justify-center" : "space-x-3",
+                      location.pathname === item.path
                         ? "bg-wellness-green text-white"
-                        : "text-gray-700 hover:bg-wellness-green-light hover:text-white"
-                    }`}
-                    onClick={() => setSidebarOpen(false)}
+                        : "text-gray-700 hover:bg-gray-100"
+                    )}
                   >
-                    <item.icon
-                      className={`mr-3 flex-shrink-0 h-5 w-5 ${
-                        isActive ? "text-white" : "text-gray-500 group-hover:text-white"
-                      }`}
-                    />
-                    {item.name}
+                    <item.icon className={cn(
+                      "h-5 w-5",
+                      location.pathname === item.path
+                        ? "text-white"
+                        : "text-gray-500"
+                    )} />
+                    {!sidebarCollapsed && (
+                      <span>{item.name}</span>
+                    )}
                   </Link>
-                );
-              })}
-            </nav>
-          </div>
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center">
-              <Avatar>
-                <AvatarImage src="" alt={user?.name || ""} />
-                <AvatarFallback className="bg-wellness-purple-light text-wellness-purple-dark">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">{user?.name}</p>
-                <Button 
-                  variant="ghost" 
-                  className="text-xs text-gray-500 flex items-center mt-1 p-0 h-auto"
-                  onClick={logout}
-                >
-                  <LogOut className="h-3 w-3 mr-1" />
-                  Sign out
-                </Button>
-              </div>
-            </div>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Bottom Actions */}
+          <div className="border-t border-gray-200 p-4">
+            <Button
+              variant="outline"
+              size={sidebarCollapsed ? "icon" : "default"}
+              className={cn(
+                "w-full border-gray-300 text-gray-700",
+                sidebarCollapsed ? "justify-center" : "justify-start"
+              )}
+              onClick={logout}
+            >
+              <LogOut className="h-5 w-5" />
+              {!sidebarCollapsed && (
+                <span className="ml-2">Log Out</span>
+              )}
+            </Button>
           </div>
         </div>
-      </div>
+      </aside>
 
-      {/* Main content */}
-      <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 md:hidden">
-          <Button
-            variant="ghost"
-            className="px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-wellness-green"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
-          <div className="flex-1 flex justify-center px-4">
-            <div className="flex-1 flex items-center justify-center">
-              <h1 className="text-xl font-bold text-gray-800">{pageTitle}</h1>
-            </div>
+      {/* Main Content */}
+      <main className={cn(
+        "flex-1 transition-all duration-300 bg-gray-50",
+        sidebarCollapsed ? "ml-20" : "ml-64"
+      )}>
+        {/* Top Bar */}
+        {pageTitle && (
+          <div className="bg-white border-b border-gray-200 px-4 py-4 sm:px-6">
+            <h1 className="text-xl font-semibold text-gray-900">{pageTitle}</h1>
           </div>
+        )}
+
+        {/* Page Content */}
+        <div className="py-6">
+          {children}
         </div>
-
-        <main className="flex-1 relative overflow-y-auto focus:outline-none">
-          <div className="py-6">
-            <div className="hidden md:flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              <h1 className="text-2xl font-semibold text-gray-900">{pageTitle}</h1>
-            </div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              <div className="py-4">{children}</div>
-            </div>
-          </div>
-        </main>
-      </div>
+      </main>
     </div>
   );
 };

@@ -48,8 +48,24 @@ if (!fs.existsSync('uploads')) {
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
+  .then(() => {
+    console.log('MongoDB connected');
+    
+    // Optional: Run seed script if specified
+    if (process.env.SEED_DATA === 'true') {
+      require('./scripts/seedData');
+    }
+  })
   .catch(err => console.error('MongoDB connection error:', err));
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
+});
 
 // Start server
 const PORT = process.env.PORT || 5000;
