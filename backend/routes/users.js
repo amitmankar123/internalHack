@@ -9,7 +9,9 @@ const User = require('../models/User');
 // @access  Private
 router.get('/profile', auth, async (req, res) => {
   try {
-    res.json(req.user);
+    // Get user profile with tokens and wallet information
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');

@@ -43,6 +43,30 @@ const UserSchema = new mongoose.Schema({
       enum: ['none', 'sprout', 'leaf', 'flower', 'tree'],
       default: 'none'
     }
+  },
+  wallet: {
+    address: {
+      type: String,
+      default: ''
+    },
+    connected: {
+      type: Boolean,
+      default: false
+    }
+  },
+  tokens: {
+    balance: {
+      type: Number,
+      default: 0
+    },
+    lifetime: {
+      type: Number,
+      default: 0
+    },
+    lastUpdated: {
+      type: Date,
+      default: Date.now
+    }
   }
 });
 

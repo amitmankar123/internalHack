@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 const CheckIn = require('../models/CheckIn');
 const Journal = require('../models/Journal');
 const User = require('../models/User');
+const Token = require('../models/Token');
 
 // @route   GET api/dashboard/stats
 // @desc    Get dashboard statistics
@@ -24,13 +25,17 @@ router.get('/stats', auth, async (req, res) => {
     // Get completed journals count
     const completedJournals = await Journal.countDocuments({ user: req.user.id });
     
+    // Get token balance
+    const tokenBalance = user.tokens ? user.tokens.balance : 0;
+    
     // Prepare response object
     const stats = {
       streakCount: user.streak.count,
       totalCheckIns,
       lastCheckIn: lastCheckIn ? lastCheckIn.createdAt : null,
       currentMood: lastCheckIn ? lastCheckIn.mood : null,
-      completedJournals
+      completedJournals,
+      tokenBalance
     };
     
     res.json(stats);

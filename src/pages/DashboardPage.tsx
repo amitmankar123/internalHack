@@ -10,7 +10,7 @@ import { api } from "@/lib/api";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { Mic, Calendar, ArrowRight } from "lucide-react";
+import { Mic, Calendar, ArrowRight, Coins } from "lucide-react";
 
 interface DashboardStats {
   streakCount: number;
@@ -18,6 +18,7 @@ interface DashboardStats {
   lastCheckIn: string | null;
   currentMood: string | null;
   completedJournals: number;
+  tokenBalance?: number;
 }
 
 const DashboardPage = () => {
@@ -26,7 +27,8 @@ const DashboardPage = () => {
     totalCheckIns: 0,
     lastCheckIn: null,
     currentMood: null,
-    completedJournals: 0
+    completedJournals: 0,
+    tokenBalance: 0
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -123,12 +125,21 @@ const DashboardPage = () => {
             
             <div className="bg-wellness-yellow/10 rounded-lg p-5 flex flex-col justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-wellness-yellow-dark">Journal Entries</h3>
-                <p className="text-3xl font-bold mt-2">{stats.completedJournals}</p>
+                <h3 className="text-lg font-semibold text-wellness-yellow-dark">Token Balance</h3>
+                <p className="text-3xl font-bold mt-2 flex items-center">
+                  {stats.tokenBalance || 0}
+                  <Coins className="ml-2 h-5 w-5 text-wellness-yellow" />
+                </p>
               </div>
-              <div className="mt-2 text-sm text-gray-600">
-                Documenting your emotional journey
-              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate('/rewards')}
+                className="mt-2 self-start"
+              >
+                <Coins className="mr-2 h-4 w-4" />
+                View Rewards
+              </Button>
             </div>
             
             <div className="bg-wellness-teal/10 rounded-lg p-5 flex flex-col justify-between">

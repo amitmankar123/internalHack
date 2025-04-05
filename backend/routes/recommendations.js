@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const Recommendation = require('../models/Recommendation');
+const User = require('../models/User');
+const Token = require('../models/Token');
 
 // @route   GET api/recommendations
 // @desc    Get user's recommendations
@@ -43,6 +45,31 @@ router.post('/feedback', auth, async (req, res) => {
       return res.status(404).json({ message: 'Recommendation not found' });
     }
     
+    // If the feedback was positive, award tokens
+    if (helpful) {
+      // Get user
+      const user = await User.findById(req.user.id);
+      
+      // Award tokens
+      const tokensToAward = 2;
+      user.tokens.balance += tokensToAward;
+      user.tokens.lifetime += tokensToAward;
+      user.tokens.lastUpdated = new Date();
+      
+      await user.save();
+      
+      // Create token transaction record
+      const newToken = new Token({
+        user: req.user.id,
+        amount: tokensToAward,
+        type: 'earned',
+        source: 'recommendation',
+        description: 'Provided feedback on recommendation'
+      });
+      
+      await newToken.save();
+    }
+    
     res.json(recommendation);
   } catch (err) {
     console.error('Error submitting feedback:', err);
@@ -65,7 +92,33 @@ router.put('/:id/complete', auth, async (req, res) => {
       return res.status(404).json({ message: 'Recommendation not found' });
     }
     
-    res.json(recommendation);
+    // Award tokens for completing recommendation
+    const user = await User.findById(req.user.id);
+    
+    // Award tokens
+    const tokensToAward = 5;
+    user.tokens.balance += tokensToAward;
+    user.tokens.lifetime += tokensToAward;
+    user.tokens.lastUpdated = new Date();
+    
+    await user.save();
+    
+    // Create token transaction record
+    const newToken = new Token({
+      user: req.user.id,
+      amount: tokensToAward,
+      type: 'earned',
+      source: 'recommendation',
+      description: `Completed recommendation: ${recommendation.title || 'Wellness recommendation'}`
+    });
+    
+    await newToken.save();
+    
+    res.json({
+      recommendation,
+      tokensAwarded: tokensToAward,
+      newBalance: user.tokens.balance
+    });
   } catch (err) {
     console.error('Error marking recommendation as completed:', err);
     res.status(500).json({ message: 'Error marking recommendation as completed' });
