@@ -5,10 +5,11 @@ import { api } from "@/lib/api";
 import { useToast } from "@/components/ui/use-toast";
 import { Coins, TrendingUp } from "lucide-react";
 
+// filepath: TokenBalance.tsx
 interface TokenBalanceProps {
+  collapsed?: boolean; // Add this if you want to support the 'collapsed' prop
   showDetails?: boolean;
 }
-
 interface TokenBalanceData {
   balance: number;
   lifetime: number;

@@ -13,6 +13,11 @@ interface PlantGrowthData {
   nextLevelAt: number;
 }
 
+interface PlantGrowthTrackerProps {
+  // Existing props
+  collapsed: boolean; // Add this line
+}
+
 export function PlantGrowthTracker() {
   const [loading, setLoading] = useState(true);
   const [plantData, setPlantData] = useState<PlantGrowthData>({
