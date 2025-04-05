@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,34 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Mental Health Mirror custom colors
+				wellness: {
+					green: {
+						light: '#8BC34A',
+						DEFAULT: '#4CAF50',
+						dark: '#2E7D32'
+					},
+					blue: {
+						light: '#29B6F6',
+						DEFAULT: '#03A9F4',
+						dark: '#0288D1'
+					},
+					yellow: {
+						light: '#FFD54F',
+						DEFAULT: '#FFC107',
+						dark: '#FFA000'
+					},
+					purple: {
+						light: '#B39DDB',
+						DEFAULT: '#673AB7',
+						dark: '#512DA8'
+					},
+					teal: {
+						light: '#80DEEA',
+						DEFAULT: '#00BCD4',
+						dark: '#0097A7'
+					}
 				}
 			},
 			borderRadius: {
@@ -70,25 +99,37 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'plant-grow': {
+					'0%': { transform: 'scale(0.8)', opacity: '0.8' },
+					'50%': { transform: 'scale(1.05)', opacity: '1' },
+					'100%': { transform: 'scale(1)', opacity: '1' }
+				},
+				pulse: {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' }
+				},
+				'fade-in': {
+					from: { opacity: '0' },
+					to: { opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'plant-grow': 'plant-grow 1.5s ease-out forwards',
+				'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+				'fade-in': 'fade-in 0.5s ease-out'
+			},
+			fontFamily: {
+				'sans': ['Open Sans', 'ui-sans-serif', 'system-ui'],
+				'montserrat': ['Montserrat', 'ui-sans-serif', 'system-ui']
 			}
 		}
 	},
